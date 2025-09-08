@@ -1,0 +1,19 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio folder
+.vs/
+
+# Visual Studio user-specific files
+*.user
+*.suo
+*.rsuser
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# System files
+Thumbs.db
+Desktop.ini
