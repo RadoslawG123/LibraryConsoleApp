@@ -28,7 +28,7 @@ namespace LibraryConsoleApp
                 4. Delete Book
                 5. Exit
 
-                Choice: 
+                >>  
                 """);
 
                 try
@@ -46,7 +46,7 @@ namespace LibraryConsoleApp
                         """);
                 } 
 
-                // Show all books
+                // 1. Show all books
                 if (input == 1)
                 {
                     if (Books.Count != 0) 
@@ -65,41 +65,107 @@ namespace LibraryConsoleApp
                         Console.WriteLine("We don't have any book in our library. Please add one if you have.");
                     }
                 }
-                // Add new book
+                // 2. Add new book
                 if(input == 2)
                 {
                     string titleInput;
                     string authorInput;
                     float priceInput;
 
-                    Console.Write("Provide TITLE for the book: ");
+                    Console.Write("""
+                        Provide TITLE for the book: 
+                        >> 
+                        """);
                     titleInput = Console.ReadLine();
 
-                    Console.Write("Provide AUTHOR of the book: ");
+                    Console.Write("""
+                        Provide AUTHOR of the book: 
+                        >> 
+                        """);
                     authorInput = Console.ReadLine();
                     Books.Add(new Book(titleInput, authorInput));
 
-                    Console.Write("Provide BORROW PRICE for the book: ");
+                    Console.Write("""
+                        Provide BORROW PRICE for the book: 
+                        >> 
+                        """);
                     priceInput = float.Parse(Console.ReadLine());
                     Books.FirstOrDefault(b => b.Title == titleInput).setPrice(titleInput, priceInput);
 
                     Console.WriteLine("Book '" + titleInput + "' has added sucesfully.");
                 }
-                // Edit data of existing book
+                // 3. Edit data of existing book
                 if (input == 3) 
                 {
                     string titleInput;
-                    Console.Write("What book you want to edit(Provide a title): ");
+                    string userChoice = "";
+                    Console.Write("""
+                        What book you want to edit(Provide a title): 
+                        >> 
+                        """);
                     titleInput = Console.ReadLine();
 
-                    Book book = Books.Find(b => b.Title == titleInput);
-                    Console.WriteLine("Book details:");
-                    book.DisplayInfo();
-                    Console.WriteLine("What do you want to change?");
-                    ////////////////////// Last work is here !
+                    Book book = Books.Find(b => b.Title.ToLower() == titleInput.ToLower());
 
+                    while (userChoice != "5" && userChoice.ToLower() != "exit")
+                    {
+                        Console.WriteLine("Book details:");
+                        book.DisplayInfo();
+                        Console.WriteLine("What do you want to change?");
+                        Console.Write("""
+                        Options:
+
+                        1. Title
+                        2. Author
+                        3. Availibility
+                        4. Price
+                        5. Exit
+
+                        >> 
+                        """);
+                        userChoice = Console.ReadLine();
+                        if (userChoice == "1" || userChoice.ToLower() == "title")
+                        {
+                            string newTitle;
+
+                            Console.Write("""
+                            Provide new title
+                            >> 
+                            """);
+                            newTitle = Console.ReadLine();
+                            book.setTitle(newTitle);
+                        }
+                        else if (userChoice == "2" || userChoice.ToLower() == "author")
+                        {
+                            string newAuthor;
+
+                            Console.Write("""
+                            Provide new author name
+                            >> 
+                            """);
+                            newAuthor = Console.ReadLine();
+                            book.setAuthor(newAuthor);
+                        }
+                        else if (userChoice == "3" || userChoice.ToLower() == "availability")
+                        {
+                            book.changeAvailability();
+                        }
+                        else if (userChoice == "4" || userChoice.ToLower() == "price")
+                        {
+                            float newPrice;
+
+                            Console.Write("""
+                            Provide new price
+                            >> 
+                            """);
+                            newPrice = float.Parse(Console.ReadLine());
+                            book.setPrice(book.Title, newPrice);
+                        }
+                    }
                 }
-                // Exit
+                // 4. Delete Book
+                //
+                // 5. Exit
                 if(input == 5)
                 {
                     Console.WriteLine();

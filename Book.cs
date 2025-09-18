@@ -73,6 +73,7 @@ namespace LibraryConsoleApp
 
         public void changeAvailability()
         {
+            Available = !Available;
             Console.WriteLine($"Availability is changed from {!Available} to {Available}");
         }
     }
