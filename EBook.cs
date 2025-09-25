@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LibraryConsoleApp
 {
-    public class EBook : Book
+    public class Ebook : Book
     {
-        public string FileFormat { get; set; }
-        public double FileSize { get; set; }
+        public string FileFormat { get; private set; }
+        public double FileSize { get; private set; }
 
-        public EBook(string title, string author, string fileFormat, double fileSize):base(title, author)
+        public Ebook(string title, string author, string fileFormat, double fileSize):base(title, author)
         {
             FileFormat = fileFormat;
             FileSize = fileSize;
