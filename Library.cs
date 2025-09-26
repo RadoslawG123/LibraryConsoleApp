@@ -16,7 +16,7 @@ namespace LibraryConsoleApp
         {
             int input = -1;
             bool exit = false;
-            List<Book> Books = [];
+            List<PhysicalBook> Books = [];
             List<Ebook> Ebooks = [];
 
             while (!exit) 
@@ -35,6 +35,17 @@ namespace LibraryConsoleApp
                 try
                 {
                     input = int.Parse(Console.ReadLine());
+                    if (input != 1 && input != 2) 
+                    {
+                        Console.WriteLine("""
+                        --------------------------------------------------------------
+                        Incorrect choice!
+                        You can type a choice as a single digit between numbers: 1-2.
+                        Please try again.
+                        --------------------------------------------------------------
+                        """);
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -65,12 +76,10 @@ namespace LibraryConsoleApp
 
                             >>  
                             """);
-                        
-                        try
-                        {
-                            input = int.Parse(Console.ReadLine());
-                        }
-                        catch (Exception ex)
+
+                        string rawInput = Console.ReadLine();
+
+                        if (!int.TryParse(rawInput, out input) || input < 1 || input > 6)
                         {
                             Console.WriteLine("""
                         --------------------------------------------------------------
@@ -79,6 +88,7 @@ namespace LibraryConsoleApp
                         Please try again.
                         --------------------------------------------------------------
                         """);
+                            continue;
                         }
 
                         // 1. Show all books
@@ -93,7 +103,7 @@ namespace LibraryConsoleApp
                         if (input == 3)
                             EditBook(Books);
 
-                        // 4. Delete Book
+                        // 4. Delete PhysicalBook
                         if (input == 4)
                             DeleteBook(Books);
 
@@ -132,11 +142,9 @@ namespace LibraryConsoleApp
                             >>  
                             """);
 
-                        try
-                        {
-                            input = int.Parse(Console.ReadLine());
-                        }
-                        catch (Exception ex)
+                        string rawInput = Console.ReadLine();
+
+                        if (!int.TryParse(rawInput, out input) || input < 1 || input > 6)
                         {
                             Console.WriteLine("""
                         --------------------------------------------------------------
@@ -145,6 +153,7 @@ namespace LibraryConsoleApp
                         Please try again.
                         --------------------------------------------------------------
                         """);
+                            continue;
                         }
 
                         // 1. Show all books
@@ -159,9 +168,9 @@ namespace LibraryConsoleApp
                         if (input == 3)
                             EditBook(Ebooks);
 
-                        //// 4. Delete Book
-                        //if (input == 4)
-                        //    DeleteBook(Books);
+                        // 4. Delete PhysicalBook
+                        if (input == 4)
+                            DeleteBook(Ebooks);
 
                         // 5. Exit
                         if (input == 5)
@@ -184,11 +193,11 @@ namespace LibraryConsoleApp
 
         // Option Functions
 
-        // Show Book
+        // Show PhysicalBook
         public static void ShowBook(IEnumerable<Book> data)
         {
             // Books
-            if (data is List<Book> books)
+            if (data is List<PhysicalBook> books)
             {
                 if (books.Count != 0)
                 {
@@ -196,7 +205,7 @@ namespace LibraryConsoleApp
                         All books in the library:
 
                         """);
-                    foreach (Book book in books)
+                    foreach (PhysicalBook book in books)
                     {
                         book.DisplayInfo();
                     }
@@ -229,100 +238,153 @@ namespace LibraryConsoleApp
             }
         }
 
-        // Add Book
+        // Add PhysicalBook
         public static void AddBook(IEnumerable<Book> data)
         {
-            // Book
-            if (data is List<Book> books)
+            // PhysicalBook
+            if (data is List<PhysicalBook> books)
             {
-                string titleInput;
-                string authorInput;
-                float priceInput;
+                string titleInput = "";
+                string authorInput = "";
+                float priceInput = 0;
 
-                Console.Write("""
+                while (string.IsNullOrWhiteSpace(titleInput))
+                {
+                    Console.Write("""
                         Provide TITLE for the book: 
                         >> 
                         """);
-                titleInput = Console.ReadLine();
+                    titleInput = Console.ReadLine();
+                }
 
-                Console.Write("""
+                while (string.IsNullOrWhiteSpace(authorInput))
+                {
+                    Console.Write("""
                         Provide AUTHOR of the book: 
                         >> 
                         """);
-                authorInput = Console.ReadLine();
-                books.Add(new Book(titleInput, authorInput));
+                    authorInput = Console.ReadLine();
+                }
+                books.Add(new PhysicalBook(titleInput, authorInput));
 
+                string rawPriceInput;
                 Console.Write("""
                         Provide BORROW PRICE for the book: 
                         >> 
                         """);
-                priceInput = float.Parse(Console.ReadLine());
+                rawPriceInput = Console.ReadLine();
+
+                while (!float.TryParse(rawPriceInput, out priceInput))
+                {
+                    Console.WriteLine("Invalid input. Please enter a number:");
+                    rawPriceInput = Console.ReadLine();
+                }
+                
                 books.FirstOrDefault(b => b.Title == titleInput).setPrice(titleInput, priceInput);
 
-                Console.WriteLine("Book '" + titleInput + "' has added sucesfully.");
+                Console.WriteLine("PhysicalBook '" + titleInput + "' has added sucesfully.");
             }
 
             // Ebook
             else if(data is List<Ebook> ebooks)
             {
-                string titleInput;
-                string authorInput;
-                float priceInput;
+                string titleInput = "";
+                string authorInput = "";
+                float priceInput = 0;
 
-                string fileFormatInput;
-                double fileSizeInput;
+                string fileFormatInput = "";
+                double fileSizeInput = 0;
 
-                Console.Write("""
+                while (string.IsNullOrWhiteSpace(titleInput))
+                {
+                    Console.Write("""
                         Provide TITLE for the ebook: 
                         >> 
                         """);
-                titleInput = Console.ReadLine();
+                    titleInput = Console.ReadLine();
+                }
 
-                Console.Write("""
+                while (string.IsNullOrWhiteSpace(authorInput))
+                {
+                    Console.Write("""
                         Provide AUTHOR of the ebook: 
                         >> 
                         """);
-                authorInput = Console.ReadLine();
+                    authorInput = Console.ReadLine();
+                }
 
-                Console.Write("""
+                while (string.IsNullOrWhiteSpace(fileFormatInput))
+                {
+                    Console.Write("""
                         Provide FILE FORMAT for the ebook: 
                         >> 
                         """);
-                fileFormatInput = Console.ReadLine();
+                    fileFormatInput = Console.ReadLine();
+                }
 
+                string rawFilseSizeInput;
                 Console.Write("""
                         Provide FILE SIZE for the ebook: 
                         >> 
                         """);
-                fileSizeInput = double.Parse(Console.ReadLine());
+                rawFilseSizeInput = Console.ReadLine();
+
+                while (!double.TryParse(rawFilseSizeInput, out fileSizeInput))
+                {
+                    Console.WriteLine("Invalid input. Please enter a number:");
+                    rawFilseSizeInput = Console.ReadLine();
+                }
 
                 ebooks.Add(new Ebook(titleInput, authorInput, fileFormatInput, fileSizeInput));
 
+
+                string rawPriceInput;
                 Console.Write("""
                         Provide BORROW PRICE for the ebook: 
                         >> 
                         """);
-                priceInput = float.Parse(Console.ReadLine());
+                rawPriceInput = Console.ReadLine();
+
+                while (!float.TryParse(rawPriceInput, out priceInput))
+                {
+                    Console.WriteLine("Invalid input. Please enter a number:");
+                    rawPriceInput = Console.ReadLine();
+                }
+                
                 ebooks.FirstOrDefault(b => b.Title == titleInput).setPrice(titleInput, priceInput);
 
                 Console.WriteLine("Ebook '" + titleInput + "' has added sucesfully.");
             }
         }
 
-        // Edit Book
+        // Edit PhysicalBook
         public static void EditBook(IEnumerable<Book> data)
         {
-            if (data is List<Book> books)
+            if (data is List<PhysicalBook> books)
             {
-                string titleInput;
                 string userChoice = "";
-                Console.Write("""
-                        What book you want to edit(Provide a title): 
-                        >> 
-                        """);
-                titleInput = Console.ReadLine();
+                string titleInput = "";
+                PhysicalBook book = null;
 
-                Book book = books.Find(b => b.Title.ToLower() == titleInput.ToLower());
+                while (book == null)
+                {
+                    Console.Write("""
+                    What ebook do you want to edit (Provide a title): 
+                    >> 
+                    """);
+                    titleInput = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(titleInput))
+                    {
+                        Console.WriteLine("Title cannot be empty. Please try again.");
+                        continue;
+                    }
+
+                    book = books.Find(b => b.Title.ToLower() == titleInput.ToLower());
+
+                    if (book == null)
+                        Console.WriteLine("Book not found. Please enter an existing title.");
+                }
 
                 while (userChoice != "5" && userChoice.ToLower() != "exit")
                 {
@@ -343,24 +405,30 @@ namespace LibraryConsoleApp
                     userChoice = Console.ReadLine();
                     if (userChoice == "1" || userChoice.ToLower() == "title")
                     {
-                        string newTitle;
+                        string newTitle = "";
 
-                        Console.Write("""
+                        while (string.IsNullOrWhiteSpace(newTitle))
+                        {
+                            Console.Write("""
                             Provide new title
                             >> 
                             """);
-                        newTitle = Console.ReadLine();
+                            newTitle = Console.ReadLine();
+                        }
                         book.setTitle(newTitle);
                     }
                     else if (userChoice == "2" || userChoice.ToLower() == "author")
                     {
-                        string newAuthor;
+                        string newAuthor = "";
 
-                        Console.Write("""
+                        while (string.IsNullOrWhiteSpace(newAuthor))
+                        {
+                            Console.Write("""
                             Provide new author name
                             >> 
                             """);
-                        newAuthor = Console.ReadLine();
+                            newAuthor = Console.ReadLine();
+                        }
                         book.setAuthor(newAuthor);
                     }
                     else if (userChoice == "3" || userChoice.ToLower() == "availability")
@@ -369,30 +437,56 @@ namespace LibraryConsoleApp
                     }
                     else if (userChoice == "4" || userChoice.ToLower() == "price")
                     {
-                        float newPrice;
+                        float newPrice = 0;
+                        string rawNewPrice;
 
                         Console.Write("""
                             Provide new price
                             >> 
                             """);
-                        newPrice = float.Parse(Console.ReadLine());
+                        rawNewPrice = Console.ReadLine();
+
+                        while (!float.TryParse(rawNewPrice, out newPrice))
+                        {
+                            Console.WriteLine("Invalid input. Please enter a number:");
+                            rawNewPrice = Console.ReadLine();
+                        }
+
                         book.setPrice(book.Title, newPrice);
                     }
                 }
             }
+
+            // Ebook
             else if(data is List<Ebook> ebooks)
             {
                 string titleInput;
+                string fileFormatInput;
+                double fileSizeInput;
                 string userChoice = "";
-                Console.Write("""
-                        What ebook you want to edit(Provide a title): 
-                        >> 
-                        """);
-                titleInput = Console.ReadLine();
+                Ebook ebook = null;
 
-                Ebook ebook = ebooks.Find(b => b.Title.ToLower() == titleInput.ToLower());
+                while(ebook == null)
+                {
+                    Console.Write("""
+                    What ebook do you want to edit (Provide a title): 
+                    >> 
+                    """);
+                    titleInput = Console.ReadLine();
 
-                while (userChoice != "5" && userChoice.ToLower() != "exit")
+                    if (string.IsNullOrWhiteSpace(titleInput))
+                    {
+                        Console.WriteLine("Title cannot be empty. Please try again.");
+                        continue;
+                    }
+
+                    ebook = ebooks.Find(b => b.Title.ToLower() == titleInput.ToLower());
+
+                    if (ebook == null)
+                        Console.WriteLine("Ebook not found. Please enter an existing title.");
+                }
+
+                while (userChoice != "6" && userChoice.ToLower() != "exit")
                 {
                     Console.WriteLine("Ebook details:");
                     ebook.DisplayInfo();
@@ -402,70 +496,146 @@ namespace LibraryConsoleApp
 
                         1. Title
                         2. Author
-                        3. Availibility
-                        4. Price
-                        5. File format
-                        6. File size
-                        7. Exit
+                        3. Price
+                        4. File format
+                        5. File size
+                        6. Exit
 
                         >> 
                         """);
                     userChoice = Console.ReadLine();
                     if (userChoice == "1" || userChoice.ToLower() == "title")
                     {
-                        string newTitle;
+                        string newTitle = "";
 
-                        Console.Write("""
+                        while (string.IsNullOrWhiteSpace(newTitle))
+                        {
+                            Console.Write("""
                             Provide new title
                             >> 
                             """);
-                        newTitle = Console.ReadLine();
+                            newTitle = Console.ReadLine();
+                        }
                         ebook.setTitle(newTitle);
                     }
                     else if (userChoice == "2" || userChoice.ToLower() == "author")
                     {
-                        string newAuthor;
+                        string newAuthor = "";
 
-                        Console.Write("""
+                        while (string.IsNullOrWhiteSpace(newAuthor))
+                        {
+                            Console.Write("""
                             Provide new author name
                             >> 
                             """);
-                        newAuthor = Console.ReadLine();
+                            newAuthor = Console.ReadLine();
+                        }
                         ebook.setAuthor(newAuthor);
                     }
-                    else if (userChoice == "3" || userChoice.ToLower() == "availability")
+                    else if (userChoice == "3" || userChoice.ToLower() == "price")
                     {
-                        ebook.changeAvailability();
-                    }
-                    else if (userChoice == "4" || userChoice.ToLower() == "price")
-                    {
-                        float newPrice;
+                        float newPrice = 0;
+                        string rawNewPrice;
 
                         Console.Write("""
                             Provide new price
                             >> 
                             """);
-                        newPrice = float.Parse(Console.ReadLine());
-                        book.setPrice(book.Title, newPrice);
+                        rawNewPrice = Console.ReadLine();
+
+                        while (!float.TryParse(rawNewPrice, out newPrice))
+                        {
+                            Console.WriteLine("Invalid input. Please enter a number:");
+                            rawNewPrice = Console.ReadLine();
+                        }
+                        ebook.setPrice(ebook.Title, newPrice);
+                    }
+                    else if (userChoice == "4" || userChoice.ToLower() == "file format")
+                    {
+                        string newFileFormat = "";
+
+                        while (string.IsNullOrWhiteSpace(newFileFormat))
+                        {
+                            Console.Write("""
+                            Provide new file format
+                            >> 
+                            """);
+                            newFileFormat = Console.ReadLine();
+                        }
+                        ebook.SetFileFormat(newFileFormat);
+                    }
+                    else if (userChoice == "5" || userChoice.ToLower() == "file size")
+                    {
+                        double newFileSize = 0;
+                        string rawNewFileSize;
+
+                        Console.Write("""
+                            Provide new file size
+                            >> 
+                            """);
+                        rawNewFileSize = Console.ReadLine();
+
+                        while (!double.TryParse(rawNewFileSize, out newFileSize))
+                        {
+                            Console.WriteLine("Invalid input. Please enter a number:");
+                            rawNewFileSize = Console.ReadLine();
+                        }
+                        ebook.SetFileSize(newFileSize);
                     }
                 }
             }
         }
 
-        // Delete Book
-        public static void DeleteBook(List<Book> books)
+        // Delete PhysicalBook
+        public static void DeleteBook(IEnumerable<Book> data)
         {
-            string titleInput;
-            string userChoice = "";
-            Console.Write("""
-                        What book you want to remove(Provide a title): 
-                        >> 
-                        """);
-            titleInput = Console.ReadLine();
+            // Book
+            if (data is List<PhysicalBook> books)
+            {
+                string titleInput = "";
+                PhysicalBook bookToRemove = null;
 
-            books.Remove(books.Find(b => b.Title.ToLower() == titleInput.ToLower()));
+                while (bookToRemove == null)
+                {
+                    Console.Write(@"
+                    What book do you want to remove (Provide a title): 
+                    >> ");
+                    titleInput = Console.ReadLine();
 
-            Console.Write($"The book has been removed from library.");
+                    bookToRemove = books.Find(b => b.Title.ToLower() == titleInput.ToLower());
+
+                    if (bookToRemove == null)
+                        Console.WriteLine("Book not found. Please try again.");
+                }
+
+                books.Remove(bookToRemove);
+
+                Console.WriteLine("The book has been removed from library.");
+            }
+
+            // Ebook
+            else if (data is List<Ebook> ebooks)
+            {
+                string titleInput = "";
+                Ebook ebookToRemove = null;
+
+                while (ebookToRemove == null)
+                {
+                    Console.Write(@"
+                    What ebook do you want to remove (Provide a title): 
+                    >> ");
+                    titleInput = Console.ReadLine();
+
+                    ebookToRemove = ebooks.Find(e => e.Title.ToLower() == titleInput.ToLower());
+
+                    if (ebookToRemove == null)
+                        Console.WriteLine("Ebook not found. Please try again.");
+                }
+
+                ebooks.Remove(ebookToRemove);
+
+                Console.WriteLine("The ebook has been removed from library.");
+            }
         }
     }
 }

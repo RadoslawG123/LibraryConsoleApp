@@ -22,10 +22,6 @@ namespace LibraryConsoleApp
             Console.WriteLine("--------------------------------------------------------------");
             Console.WriteLine("Title: " + Title);
             Console.WriteLine("Author: " + Author);
-            if (Available)
-                Console.WriteLine("Avaible: YES");
-            else
-                Console.WriteLine("Avaible: NO");
             Console.WriteLine("File format: " + FileFormat);
             Console.WriteLine("File size: " + FileSize + "MB");
             Console.WriteLine("Price: " + Price + "$");
