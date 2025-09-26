@@ -30,7 +30,7 @@ namespace LibraryConsoleApp
 
         public void SetFileFormat(string format)
         {
-            List<string> allowedFormats = ["PDF", "EPUB", "MOBI", "TXT", "MP3", "MP4"];
+            List<string> allowedFormats = new List<string> { "PDF", "EPUB", "MOBI", "TXT", "MP3", "MP4" };
 
             if (format.Length == 0)
             {
@@ -48,7 +48,7 @@ namespace LibraryConsoleApp
                 return;
             }
 
-            FileFormat = format;
+            FileFormat = format.ToUpper();
             Console.WriteLine($"File format {format} is setted succesfully.");
         }
 
